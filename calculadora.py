@@ -1,7 +1,9 @@
+import random
+
 #Matriz bidimensional
 filas = int(input("Ingrese el numero de filas: "))
 columnas = int(input("ingrese el numero de columnas: "))
-mapa = [[" " for _ in range(filas)] for _ in range(columnas)]
+mapa = [[0 for _ in range(columnas)] for _ in range(filas)]
 
 # Ingresar y validar coordenadas de entrada y salida
 def coordenadas_validas(fil, col):
@@ -21,12 +23,48 @@ while True:
     else:
         print("Coordenadas invalidas. Intente de nuevo")
 
+def imprimir_mapa(mapa):
+    for row in mapa:
+        for celda in row:
+            if celda == 0:
+                print(f'[0]', end= ' ')
+            elif celda == 1:
+                print(f'[🏛️]', end= ' ')
+            elif celda == 2:
+                print(f'[🌊]', end= ' ')
+            elif celda == 3:
+                print(f'[🚧]', end= ' ')
+            else:
+                print(f'[{celda}]', end=' ')  
+        print("\n")
+
+def generar_obstaculos(filas, columnas, cantidad_obstaculos, mapa, fil_entrada, col_entrada, fil_salida, col_salida):
+    obstaculos = [1, 2, 3]
+    colocados = 0
+
+    while colocados < cantidad_obstaculos:
+        x = random.randint(0, filas - 1)
+        y = random.randint(0, columnas - 1)
+
+        mx = [x + 2, x - 2]
+        my = [y + 2, y -2]
+
+        nueva_x = random.choice(mx)
+        nueva_y = random.choice(my)
+
+        if (
+            (nueva_x, nueva_y) != (fil_entrada, col_entrada)
+            and (nueva_x, nueva_y) != (fil_salida, col_salida)
+            and 0 < nueva_x < columnas
+            and 0 < nueva_y < filas
+            and mapa[nueva_x][nueva_y] == 0
+            #validar que los adyacentes no sean 3
+        ):
+            mapa[nueva_x][nueva_y] = random.choice(obstaculos)
+            colocados += 1
+
+cantidad_obstaculos = filas * columnas / 3
+generar_obstaculos(filas, columnas, cantidad_obstaculos, mapa, fil_entrada, col_entrada, fil_salida, col_salida)
 mapa[fil_entrada][col_entrada] = 'E'
 mapa[fil_salida][col_salida] = 'S'
-
-for row in mapa:
-    for celda in row:
-        print(f'[{celda}]', end= ' ')
-    print("\n")
-
-#agregar obstaculos
+imprimir_mapa(mapa)
